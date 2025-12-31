@@ -57,7 +57,7 @@
     body.force-mobile #desktopUI{display:none}
     body.force-mobile #mobileUI{display:block}
 
-    /* ====== DESKTOP UI ====== */
+    /* ====== DESKTOP TOPBAR ====== */
     .topbar{
       position:fixed;
       top: calc(14px + var(--safeTop));
@@ -129,6 +129,7 @@
     }
     button:disabled{ opacity:.45; cursor:not-allowed }
 
+    /* ====== DESKTOP BOOK (3D solo PC) ====== */
     .wrap{
       height:100%;
       display:grid;
@@ -176,7 +177,6 @@
         scale(1);
     }
     .book{ position:absolute; inset:0; transform-style: preserve-3d; }
-
     .base{
       position:absolute; inset:0;
       border-radius: 42px;
@@ -282,6 +282,32 @@
     .coverTitle em{ font-style:normal; color: var(--gold); }
     .coverSub{ color: rgba(255,255,255,.78); line-height:1.55; font-size: 14px; max-width: 52ch; }
 
+    .openCta{
+      margin-top:auto;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+      padding: 12px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      box-shadow: 0 18px 40px rgba(0,0,0,.18);
+      user-select:none;
+    }
+    .pulse{
+      width:44px; height:44px;
+      border-radius: 16px;
+      border:1px solid rgba(255,211,122,.35);
+      display:grid; place-items:center;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.25), rgba(255,211,122,.12));
+      box-shadow: 0 0 0 0 rgba(255,211,122,.25);
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes pulse{
+      0%{ box-shadow: 0 0 0 0 rgba(255,211,122,.26) }
+      70%{ box-shadow: 0 0 0 14px rgba(255,211,122,0) }
+      100%{ box-shadow: 0 0 0 0 rgba(255,211,122,0) }
+    }
+
     .pagesArea{
       position:absolute; left:5%; top:6%;
       width:90%; height:88%;
@@ -302,7 +328,8 @@
       background: rgba(255,255,255,.02);
     }
     .seam{
-      position:absolute; left:50%; top:0;
+      position:absolute;
+      left:50%; top:0;
       width:2.6%; height:100%;
       transform: translateX(-50%);
       background:
@@ -342,7 +369,7 @@
     .signature{ position:absolute; left:34px; bottom:26px; font-weight:1200; color: rgba(16,19,31,.85); }
     .pageNum{ position:absolute; right:16px; bottom:12px; font-size:12px; color: rgba(16,19,31,.55); font-weight:1100; }
 
-    /* ====== MOBILE READER (FIX: sin disabled real) ====== */
+    /* ====== MOBILE READER ====== */
     .mShell{
       position:fixed; inset:0;
       display:flex;
@@ -509,11 +536,6 @@
       box-shadow: 0 0 0 0 rgba(255,211,122,.25);
       animation: pulse 1.6s ease-in-out infinite;
     }
-    @keyframes pulse{
-      0%{ box-shadow: 0 0 0 0 rgba(255,211,122,.26) }
-      70%{ box-shadow: 0 0 0 14px rgba(255,211,122,0) }
-      100%{ box-shadow: 0 0 0 0 rgba(255,211,122,0) }
-    }
     .mCard.opened .mCover{
       transform: translateX(-112%) rotate(-4deg);
       opacity:0;
@@ -547,10 +569,10 @@
       <div class="brand"><div class="dot"></div><span>Libro de Fin de Año</span></div>
       <div class="controls">
         <div class="pill"><strong>Página</strong> <span id="pageLabel">1</span>/<span id="pageTotal">1</span></div>
-        <button id="openBtn">📖 Abrir</button>
-        <button id="prevBtn">⟵</button>
-        <button id="nextBtn">⟶</button>
-        <button id="restartBtn">↺</button>
+        <button id="openBtn" type="button">📖 Abrir</button>
+        <button id="prevBtn" type="button">⟵</button>
+        <button id="nextBtn" type="button">⟶</button>
+        <button id="restartBtn" type="button">↺</button>
       </div>
     </div>
 
@@ -587,7 +609,7 @@
                 <div class="badge">💛 Para mi amor</div>
                 <div class="coverTitle">Angie…<br><em>abre esto</em></div>
                 <div class="coverSub">Clic suave: abre el libro y empieza por la primera página.</div>
-                <div class="openCta" style="margin-top:auto">
+                <div class="openCta">
                   <div style="display:flex;flex-direction:column;gap:2px">
                     <strong style="font-size:13px">Clic para abrir</strong>
                     <span style="font-size:12px;opacity:.8">o usa “Abrir”</span>
@@ -659,201 +681,202 @@
   </div>
 
   <script>
-    const CONFIG = {
+    var CONFIG = {
       loverName: "Angie Gurdian",
       yourName: "Jordy Retana (Jigüiro)",
       coverSub: "Este año pasó rápido… pero tú te quedaste conmigo."
     };
 
-    const pages = [
+    var pages = [
       null,
       {
         kicker: "PRÓLOGO",
         title: "Antes de terminar el año…",
         text:
-`Angie, mi amor…
-
-Solo quería hacer algo diferente.
-Algo que no se pierda entre chats, ni se quede en “después te digo”.
-
-Gracias por este año.
-Por estar ahí, por escucharme, por quererme como soy.
-A veces no lo digo tanto, pero yo sí me fijo en todo: en tus detalles, en tu forma de hablar, en cómo te ríes, en cómo me miras.
-
-Me gusta lo nuestro.
-Me gusta cómo se siente estar contigo, aunque sea en lo simple.
-Me encanta tenerte cerca.
-
-Y sí… yo te quiero muchísimo.
-No solo “me gustas”.
-Me importas. De verdad.`,
+"Angie, mi amor…\n\n" +
+"Solo quería hacer algo diferente.\n" +
+"Algo que no se pierda entre chats, ni se quede en “después te digo”.\n\n" +
+"Gracias por este año.\n" +
+"Por estar ahí, por escucharme, por quererme como soy.\n" +
+"A veces no lo digo tanto, pero yo sí me fijo en todo.\n\n" +
+"Me gusta lo nuestro.\n" +
+"Me encanta tenerte cerca.\n\n" +
+"Y sí… yo te quiero muchísimo.\n" +
+"Me importas. De verdad.",
         signature: "— Jigüiro"
       },
       {
         kicker: "RECUERDOS",
         title: "Momentos que me guardo",
         text:
-`• Los ratos en tu casa.
-Antes ni pasaba de la puerta… y ahora ahí me siento tranquilo contigo.
-Puede sonar simple, pero para mí vale un montón.
-
-• 4 de octubre — tu cumpleaños.
-Cantarte “cumpleaños” ahí fue demasiado lindo.
-
-• 21 de julio — la foto del espejo.
-No sé por qué, pero me encanta esa foto.
-
-• 20 de abril — una salida que se sintió súper bonita.
-
-• Cuando te estaba enseñando a manejar.
-Verte intentarlo y lograrlo… me hizo demasiado feliz.
-
-Y los mini momentos:
-cuando te quedas dormida,
-cuando te ríes sin darte cuenta,
-cuando estás tranquila y solo estás ahí…
-Ahí es cuando yo pienso: “qué bonito es esto”.`,
+"• Los ratos en tu casa.\n" +
+"Antes ni pasaba de la puerta… y ahora ahí me siento tranquilo contigo.\n\n" +
+"• 4 de octubre — tu cumpleaños.\n" +
+"• 21 de julio — la foto del espejo.\n" +
+"• 20 de abril — una salida súper bonita.\n\n" +
+"• Cuando te estaba enseñando a manejar.\n" +
+"Verte intentarlo y lograrlo… me hizo demasiado feliz.\n\n" +
+"Y los mini momentos:\n" +
+"cuando te quedas dormida,\n" +
+"cuando te ríes sin darte cuenta,\n" +
+"cuando estás tranquila y solo estás ahí…\n\n" +
+"Ahí yo pienso: “qué bonito es esto”.",
         signature: "— Jigüiro"
       },
       {
         kicker: "TE ADMIRO",
         title: "Cosas que amo de ti",
         text:
-`Amo tu forma de ser.
-Amo que puedes ser fuerte y tierna al mismo tiempo.
-
-Tu pelo me encanta, demasiado.
-Me gusta cómo te queda, cómo se ve, y hasta cómo huele.
-
-Me encantan tus detalles.
-Y no es broma:
-tú haces que todo se sienta mejor.`,
+"Amo tu forma de ser.\n" +
+"Amo que puedes ser fuerte y tierna a la vez.\n\n" +
+"Tu pelo me encanta demasiado.\n" +
+"Me gusta cómo te queda, cómo se ve, y hasta cómo huele.\n\n" +
+"Me encantan tus detalles.\n" +
+"Y no es broma: tú haces que todo se sienta mejor.",
         signature: "— Jigüiro"
       },
       {
         kicker: "LO QUE QUIERO",
         title: "Para el año que viene",
         text:
-`Quiero un año bonito para los dos.
-Quiero verte feliz y tranquila.
-Quiero que tengamos más tiempo juntos, más planes, más nosotros.
-
-Y cuando vengan días pesados, quiero que igual nos cuidemos.
-Que sigamos eligiéndonos.`,
+"Quiero un año bonito para los dos.\n" +
+"Quiero verte feliz y tranquila.\n\n" +
+"Quiero que tengamos más tiempo juntos, más planes, más nosotros.\n\n" +
+"Y cuando vengan días pesados,\n" +
+"quiero que igual nos cuidemos.\n" +
+"Que sigamos eligiéndonos.",
         signature: "— Jigüiro"
       },
       {
         kicker: "PROMESA",
         title: "De mí para ti",
         text:
-`No soy perfecto. Y tú lo sabes.
-Pero esto sí te lo prometo:
-
-— Voy a cuidarte.
-— Voy a hablarte bonito.
-— Voy a estar cuando lo necesites.
-— Voy a respetarte siempre.
-— Y voy a seguir eligiéndote.`,
+"No soy perfecto. Y tú lo sabes.\n\n" +
+"Pero esto sí te lo prometo:\n\n" +
+"— Voy a cuidarte.\n" +
+"— Voy a hablarte bonito.\n" +
+"— Voy a estar cuando lo necesites.\n" +
+"— Voy a respetarte siempre.\n" +
+"— Y voy a seguir eligiéndote.",
         signature: "— Jigüiro"
       },
       {
         kicker: "FINAL",
         title: "Feliz fin de año ✨",
         text:
-`Gracias por este año, Angie.
-Gracias por dejarme entrar a tu vida.
-
-Porque yo sí te amo.
-Y te quiero conmigo.
-
-Feliz fin de año, mi vida.`,
+"Gracias por este año, Angie.\n" +
+"Gracias por dejarme entrar a tu vida.\n\n" +
+"Porque yo sí te amo.\n" +
+"Y te quiero conmigo.\n\n" +
+"Feliz fin de año, mi vida.",
         signature: "— Jordy (Jigüiro)"
       }
     ];
 
-    const LAST_PAGE = pages.length - 1;
+    var LAST_PAGE = pages.length - 1;
 
-    // Force mobile UI on iPhone Safari
-    const ua = navigator.userAgent;
-    const isIOS = /iPhone|iPad|iPod/i.test(ua);
-    const isWebKit = /AppleWebKit/i.test(ua);
-    const isSafari = isWebKit && !/CriOS|FxiOS|OPiOS|EdgiOS/i.test(ua);
-    if (isIOS && isSafari) document.body.classList.add("force-mobile");
+    // ====== Helpers compatibles Safari ======
+    function safeSetText(id, value){
+      var el = document.getElementById(id);
+      if(el) el.textContent = value;
+    }
 
     function esc(s){
-      return String(s)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
+      s = String(s);
+      return s
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
     }
 
-    // Tap helper
     function bindTap(el, fn){
       if(!el) return;
-      let locked=false;
-      const run=(e)=>{
+      var locked=false;
+      function run(e){
         if(locked) return;
         locked=true;
-        try{ fn(e); } finally { setTimeout(()=>locked=false,140); }
-      };
-      el.addEventListener("click", (e)=> run(e));
-      el.addEventListener("touchend", (e)=>{ e.preventDefault(); run(e); }, {passive:false});
-      el.addEventListener("pointerup", (e)=> run(e));
+        try{ fn(e); } finally { setTimeout(function(){ locked=false; }, 140); }
+      }
+      el.addEventListener("click", function(e){ run(e); });
+      el.addEventListener("touchend", function(e){ e.preventDefault(); run(e); }, {passive:false});
+      el.addEventListener("pointerup", function(e){ run(e); });
     }
 
-    // ===== Desktop fill =====
-    document.getElementById("loverName")?.textContent = CONFIG.loverName;
-    document.getElementById("yourName")?.textContent  = CONFIG.yourName;
-    document.getElementById("coverSub")?.textContent  = CONFIG.coverSub;
-    document.getElementById("pageTotal")?.textContent = LAST_PAGE;
+    // ====== FORCE MOBILE (cualquier teléfono / iPhone Safari / WhatsApp webview) ======
+    (function(){
+      var ua = navigator.userAgent || "";
+      var isTouch = (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) || ("ontouchstart" in window);
+      var small = window.matchMedia ? window.matchMedia("(max-width: 900px)").matches : (window.innerWidth <= 900);
+      var isiOS = /iPhone|iPad|iPod/i.test(ua);
+      var webkit = /AppleWebKit/i.test(ua);
+      var mobileWord = /Mobile/i.test(ua);
+      // Fuerza mobile si es teléfono (touch + pequeño) o iOS webkit
+      if ((isTouch && small) || (isiOS && webkit) || (webkit && mobileWord && small)) {
+        document.body.classList.add("force-mobile");
+      }
+    })();
 
-    // ===== Desktop logic (igual) =====
-    const bookWrap = document.getElementById("bookWrap");
-    const frontCover = document.getElementById("frontCover");
-    const openBtn = document.getElementById("openBtn");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const restartBtn = document.getElementById("restartBtn");
-    const leftContent = document.getElementById("leftContent");
-    const rightContent = document.getElementById("rightContent");
-    const pageLabel = document.getElementById("pageLabel");
-    const spread = document.getElementById("spread");
+    // ====== Fill text ======
+    safeSetText("loverName", CONFIG.loverName);
+    safeSetText("yourName", CONFIG.yourName);
+    safeSetText("coverSub", CONFIG.coverSub);
+    safeSetText("pageTotal", String(LAST_PAGE));
 
-    let dOpened=false, dCurrent=1, dLock=false;
+    safeSetText("mLoverName", CONFIG.loverName);
+    safeSetText("mYourName", CONFIG.yourName);
+    safeSetText("mCoverSub", CONFIG.coverSub);
+    safeSetText("mPageTotal", String(LAST_PAGE));
+
+    // ====== Desktop logic ======
+    var bookWrap = document.getElementById("bookWrap");
+    var frontCover = document.getElementById("frontCover");
+    var openBtn = document.getElementById("openBtn");
+    var prevBtn = document.getElementById("prevBtn");
+    var nextBtn = document.getElementById("nextBtn");
+    var restartBtn = document.getElementById("restartBtn");
+    var leftContent = document.getElementById("leftContent");
+    var rightContent = document.getElementById("rightContent");
+    var pageLabel = document.getElementById("pageLabel");
+    var spread = document.getElementById("spread");
+
+    var dOpened=false, dCurrent=1, dLock=false;
 
     function dHTML(p,n){
-      if(!p) return `<div class="kicker"></div><div class="line"></div><div class="title"></div><div class="text"></div><div class="signature"></div><div class="pageNum"></div>`;
-      return `
-        <div class="kicker">${esc(p.kicker||"")}</div>
-        <div class="line"></div>
-        <div class="title">${esc(p.title||"")}</div>
-        <div class="text">${esc(p.text||"")}</div>
-        <div class="signature">${esc(p.signature||"")}</div>
-        <div class="pageNum">${n}</div>`;
+      if(!p) return '<div class="kicker"></div><div class="line"></div><div class="title"></div><div class="text"></div><div class="signature"></div><div class="pageNum"></div>';
+      return ''+
+        '<div class="kicker">'+esc(p.kicker||"")+'</div>'+
+        '<div class="line"></div>'+
+        '<div class="title">'+esc(p.title||"")+'</div>'+
+        '<div class="text">'+esc(p.text||"")+'</div>'+
+        '<div class="signature">'+esc(p.signature||"")+'</div>'+
+        '<div class="pageNum">'+n+'</div>';
     }
 
-    function dRender(smooth=true){
+    function dRender(smooth){
+      if(typeof smooth === "undefined") smooth=true;
       if(!leftContent || !rightContent) return;
-      const leftNum=dCurrent-1, rightNum=dCurrent;
 
-      const doR=()=>{
+      var leftNum=dCurrent-1, rightNum=dCurrent;
+
+      function doR(){
         leftContent.innerHTML=dHTML(pages[leftNum]||null,leftNum);
         rightContent.innerHTML=dHTML(pages[rightNum]||null,rightNum);
-        pageLabel && (pageLabel.textContent=String(dCurrent));
+        if(pageLabel) pageLabel.textContent=String(dCurrent);
 
-        prevBtn && (prevBtn.disabled = !dOpened || dLock || dCurrent<=1);
-        nextBtn && (nextBtn.disabled = !dOpened || dLock || dCurrent>=LAST_PAGE);
-        restartBtn && (restartBtn.disabled = !dOpened || dLock);
-      };
+        if(prevBtn) prevBtn.disabled = !dOpened || dLock || dCurrent<=1;
+        if(nextBtn) nextBtn.disabled = !dOpened || dLock || dCurrent>=LAST_PAGE;
+        if(restartBtn) restartBtn.disabled = !dOpened || dLock;
+      }
 
       if(!smooth){ doR(); return; }
+
       leftContent.classList.add("fadeOut");
       rightContent.classList.add("fadeOut");
-      setTimeout(()=>{
+      setTimeout(function(){
         doR();
-        requestAnimationFrame(()=>{
+        requestAnimationFrame(function(){
           leftContent.classList.remove("fadeOut");
           rightContent.classList.remove("fadeOut");
         });
@@ -865,78 +888,73 @@ Feliz fin de año, mi vida.`,
       dOpened=true;
       dCurrent=1;
       dRender(false);
-      bookWrap && bookWrap.classList.add("opened");
+      if(bookWrap) bookWrap.classList.add("opened");
     }
     function dNext(){
       if(!dOpened||dLock||dCurrent>=LAST_PAGE) return;
       dLock=true;
-      setTimeout(()=>{ dCurrent++; dLock=false; dRender(true); },140);
+      setTimeout(function(){ dCurrent++; dLock=false; dRender(true); },140);
     }
     function dPrev(){
       if(!dOpened||dLock||dCurrent<=1) return;
       dLock=true;
-      setTimeout(()=>{ dCurrent--; dLock=false; dRender(true); },140);
+      setTimeout(function(){ dCurrent--; dLock=false; dRender(true); },140);
     }
 
     bindTap(openBtn, dOpen);
     bindTap(frontCover, dOpen);
     bindTap(nextBtn, dNext);
     bindTap(prevBtn, dPrev);
-    bindTap(restartBtn, ()=>{ if(!dOpened||dLock) return; dCurrent=1; dRender(true); });
+    bindTap(restartBtn, function(){ if(!dOpened||dLock) return; dCurrent=1; dRender(true); });
 
-    spread?.addEventListener("click",(e)=>{
-      if(!dOpened||dLock) return;
-      if(e.target.closest(".text")) return;
-      const r=spread.getBoundingClientRect();
-      const x=(e.clientX-r.left)/r.width;
-      if(x>.88) dNext(); else if(x<.12) dPrev();
-    });
+    if(spread){
+      spread.addEventListener("click", function(e){
+        if(!dOpened||dLock) return;
+        if(e.target && e.target.closest && e.target.closest(".text")) return;
+        var r=spread.getBoundingClientRect();
+        var x=(e.clientX-r.left)/r.width;
+        if(x>.88) dNext(); else if(x<.12) dPrev();
+      });
+    }
 
-    // ===== Mobile fill =====
-    document.getElementById("mLoverName").textContent = CONFIG.loverName;
-    document.getElementById("mYourName").textContent  = CONFIG.yourName;
-    document.getElementById("mCoverSub").textContent  = CONFIG.coverSub;
-    document.getElementById("mPageTotal").textContent = LAST_PAGE;
+    // ====== Mobile logic (sin disabled real) ======
+    var mCard = document.getElementById("mCard");
+    var mOpenBig = document.getElementById("mOpenBig");
+    var mOpenBtn = document.getElementById("mOpenBtn");
+    var mPrevBtn = document.getElementById("mPrevBtn");
+    var mNextBtn = document.getElementById("mNextBtn");
+    var mRestartBtn = document.getElementById("mRestartBtn");
 
-    // ===== Mobile logic (FIX) =====
-    const mCard = document.getElementById("mCard");
-    const mOpenBig = document.getElementById("mOpenBig");
-    const mOpenBtn = document.getElementById("mOpenBtn");
-    const mPrevBtn = document.getElementById("mPrevBtn");
-    const mNextBtn = document.getElementById("mNextBtn");
-    const mRestartBtn = document.getElementById("mRestartBtn");
+    var mKicker = document.getElementById("mKicker");
+    var mTitle  = document.getElementById("mTitle");
+    var mText   = document.getElementById("mText");
+    var mSign   = document.getElementById("mSign");
+    var mNum    = document.getElementById("mNum");
+    var mPageLabel = document.getElementById("mPageLabel");
+    var mSwap = document.getElementById("mSwap");
 
-    const mKicker = document.getElementById("mKicker");
-    const mTitle  = document.getElementById("mTitle");
-    const mText   = document.getElementById("mText");
-    const mSign   = document.getElementById("mSign");
-    const mNum    = document.getElementById("mNum");
-    const mPageLabel = document.getElementById("mPageLabel");
-    const mSwap = document.getElementById("mSwap");
+    var mOpened=false, mCurrent=1, mBusy=false;
 
-    let mOpened=false, mCurrent=1, mBusy=false;
-
-    // ✅ En móvil NO usamos disabled real; usamos aria-disabled + clase
     function setMobileBtnState(btn, disabled){
       if(!btn) return;
       btn.setAttribute("aria-disabled", disabled ? "true" : "false");
-      btn.classList.toggle("isDisabled", !!disabled);
+      if(disabled) btn.classList.add("isDisabled");
+      else btn.classList.remove("isDisabled");
     }
     function isBtnDisabled(btn){
-      return btn?.getAttribute("aria-disabled") === "true";
+      return btn && btn.getAttribute("aria-disabled")==="true";
     }
 
     function mSet(n){
-      const p=pages[n];
-      mKicker.textContent=p?.kicker||"";
-      mTitle.textContent=p?.title||"";
-      mText.textContent =p?.text||"";
-      mSign.textContent =p?.signature||"";
-      mNum.textContent  =String(n);
-      mPageLabel.textContent=String(n);
-      mText.scrollTop=0;
+      var p=pages[n];
+      if(mKicker) mKicker.textContent = p ? (p.kicker||"") : "";
+      if(mTitle)  mTitle.textContent  = p ? (p.title||"") : "";
+      if(mText)   mText.textContent   = p ? (p.text||"") : "";
+      if(mSign)   mSign.textContent   = p ? (p.signature||"") : "";
+      if(mNum)    mNum.textContent    = String(n);
+      if(mPageLabel) mPageLabel.textContent = String(n);
+      if(mText) mText.scrollTop = 0;
 
-      // límites reales
       setMobileBtnState(mPrevBtn, !mOpened || mBusy || n<=1);
       setMobileBtnState(mNextBtn, !mOpened || mBusy || n>=LAST_PAGE);
       setMobileBtnState(mRestartBtn, !mOpened || mBusy);
@@ -946,7 +964,7 @@ Feliz fin de año, mi vida.`,
       if(mOpened) return;
       mOpened=true;
       mCurrent=1;
-      mCard.classList.add("opened");
+      if(mCard) mCard.classList.add("opened");
       mSet(mCurrent);
     }
 
@@ -955,30 +973,34 @@ Feliz fin de año, mi vida.`,
       if(to<1||to>LAST_PAGE) return;
 
       mBusy=true;
-      mSet(mCurrent); // refresca estados mientras anima (sin disabled real)
-      const p=pages[to];
+      mSet(mCurrent);
 
-      mSwap.innerHTML = `
-        <div class="mPaper"></div>
-        <div class="mPage">
-          <div class="mKicker">${esc(p.kicker||"")}</div>
-          <div class="mLine"></div>
-          <div class="mTitle">${esc(p.title||"")}</div>
-          <div class="mText" style="overflow:hidden;white-space:pre-wrap;font-size:15px;line-height:1.65;color:rgba(16,19,31,.86)">${esc(p.text||"")}</div>
-          <div class="mFoot">
-            <div class="mSign">${esc(p.signature||"")}</div>
-            <div class="mNum">${to}</div>
-          </div>
-        </div>
-      `;
+      var p=pages[to];
+      if(!mSwap) return;
+
+      mSwap.innerHTML =
+        '<div class="mPaper"></div>' +
+        '<div class="mPage">' +
+          '<div class="mKicker">'+esc(p.kicker||"")+'</div>' +
+          '<div class="mLine"></div>' +
+          '<div class="mTitle">'+esc(p.title||"")+'</div>' +
+          '<div class="mText" style="overflow:hidden;white-space:pre-wrap;font-size:15px;line-height:1.65;color:rgba(16,19,31,.86)">'+esc(p.text||"")+'</div>' +
+          '<div class="mFoot">' +
+            '<div class="mSign">'+esc(p.signature||"")+'</div>' +
+            '<div class="mNum">'+to+'</div>' +
+          '</div>' +
+        '</div>';
+
       mSwap.classList.add("show");
 
-      const pageEl=document.getElementById("mPage");
-      if(dir==="next"){ pageEl.classList.add("outL"); mSwap.classList.add("inR"); }
-      else { pageEl.classList.add("outR"); mSwap.classList.add("inL"); }
+      var pageEl = document.getElementById("mPage");
+      if(pageEl){
+        if(dir==="next"){ pageEl.classList.add("outL"); mSwap.classList.add("inR"); }
+        else { pageEl.classList.add("outR"); mSwap.classList.add("inL"); }
+      }
 
-      setTimeout(()=>{
-        pageEl.classList.remove("outL","outR");
+      setTimeout(function(){
+        if(pageEl) pageEl.classList.remove("outL","outR");
         mSwap.classList.remove("inR","inL","show");
         mSwap.innerHTML="";
         mCurrent=to;
@@ -993,46 +1015,59 @@ Feliz fin de año, mi vida.`,
 
     function ensureOpenThen(action){
       if(!mOpened) mOpen();
-      setTimeout(()=> action(), 30);
+      setTimeout(function(){ action(); }, 30);
     }
 
     bindTap(mOpenBig, mOpen);
     bindTap(mOpenBtn, mOpen);
 
-    bindTap(mNextBtn, ()=>{ if(isBtnDisabled(mNextBtn)) return; ensureOpenThen(mNext); });
-    bindTap(mPrevBtn, ()=>{ if(isBtnDisabled(mPrevBtn)) return; ensureOpenThen(mPrev); });
-    bindTap(mRestartBtn, ()=>{ if(isBtnDisabled(mRestartBtn)) return; ensureOpenThen(mRestart); });
+    bindTap(mNextBtn, function(){
+      if(isBtnDisabled(mNextBtn)) return;
+      ensureOpenThen(mNext);
+    });
+    bindTap(mPrevBtn, function(){
+      if(isBtnDisabled(mPrevBtn)) return;
+      ensureOpenThen(mPrev);
+    });
+    bindTap(mRestartBtn, function(){
+      if(isBtnDisabled(mRestartBtn)) return;
+      ensureOpenThen(mRestart);
+    });
 
-    // Swipe (solo si no empezó dentro del texto)
-    let sx=0, sy=0, started=false, fromText=false;
-    mCard.addEventListener("touchstart",(e)=>{
-      if(!mOpened||mBusy) return;
-      const t=e.touches[0];
-      sx=t.clientX; sy=t.clientY;
-      started=true;
-      fromText=!!e.target.closest("#mText");
-    },{passive:true});
+    // Swipe (no si empezó dentro del texto)
+    var sx=0, sy=0, started=false, fromText=false;
+    if(mCard){
+      mCard.addEventListener("touchstart", function(e){
+        if(!mOpened||mBusy) return;
+        var t=e.touches[0];
+        sx=t.clientX; sy=t.clientY;
+        started=true;
+        fromText = !!(e.target && e.target.closest && e.target.closest("#mText"));
+      }, {passive:true});
 
-    mCard.addEventListener("touchend",(e)=>{
-      if(!started||!mOpened||mBusy) return;
-      started=false;
-      if(fromText) return;
-      const t=e.changedTouches[0];
-      const dx=t.clientX-sx;
-      const dy=t.clientY-sy;
-      if(Math.abs(dx)>55 && Math.abs(dy)<45){
-        if(dx<0 && !isBtnDisabled(mNextBtn)) mNext();
-        else if(dx>0 && !isBtnDisabled(mPrevBtn)) mPrev();
-      }
-    },{passive:true});
+      mCard.addEventListener("touchend", function(e){
+        if(!started||!mOpened||mBusy) return;
+        started=false;
+        if(fromText) return;
+        var t=e.changedTouches[0];
+        var dx=t.clientX-sx;
+        var dy=t.clientY-sy;
+        if(Math.abs(dx)>55 && Math.abs(dy)<45){
+          if(dx<0 && !isBtnDisabled(mNextBtn)) mNext();
+          else if(dx>0 && !isBtnDisabled(mPrevBtn)) mPrev();
+        }
+      }, {passive:true});
+    }
 
     // init
-    window.addEventListener("load", ()=>{
+    window.addEventListener("load", function(){
       dRender(false);
-      requestAnimationFrame(()=> bookWrap && bookWrap.classList.add("stage-in"));
+      requestAnimationFrame(function(){
+        if(bookWrap) bookWrap.classList.add("stage-in");
+      });
 
-      mCard.classList.add("show");
-      mSet(1);
+      if(mCard) mCard.classList.add("show");
+      mSet(1); // <- SIEMPRE deja algo renderizado (aunque no hayas abierto)
     });
   </script>
 </body>
