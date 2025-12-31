@@ -57,7 +57,7 @@
     body.force-mobile #desktopUI{display:none}
     body.force-mobile #mobileUI{display:block}
 
-    /* ====== DESKTOP TOPBAR ====== */
+    /* ====== DESKTOP UI (solo PC) ====== */
     .topbar{
       position:fixed;
       top: calc(14px + var(--safeTop));
@@ -131,7 +131,6 @@
     button:active{ transform: translateY(0px) scale(.99) }
     button:disabled{ opacity:.45; cursor:not-allowed }
 
-    /* ====== DESKTOP BOOK (3D solo PC) ====== */
     .wrap{
       height:100%;
       display:grid;
@@ -179,6 +178,7 @@
         scale(1);
     }
     .book{ position:absolute; inset:0; transform-style: preserve-3d; }
+
     .base{
       position:absolute; inset:0;
       border-radius: 42px;
@@ -222,6 +222,7 @@
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
       opacity:.9;
     }
+
     .cover{
       position:absolute; top:6%;
       height:88%; width:45%;
@@ -279,8 +280,8 @@
       font-weight: 1100;
       letter-spacing:.25px;
     }
-    .coverTitle{ font-size: 36px; font-weight: 1200; line-height: 1.05; letter-spacing: .3px; }
-    .coverTitle em{ font-style:normal; color: var(--gold); text-shadow: 0 16px 35px rgba(255,211,122,.18); }
+    .coverTitle{ font-size: 36px; font-weight: 1200; line-height: 1.05; }
+    .coverTitle em{ font-style:normal; color: var(--gold); }
     .coverSub{ color: rgba(255,255,255,.78); line-height:1.55; font-size: 14px; max-width: 52ch; }
 
     .openCta{
@@ -329,8 +330,7 @@
       background: rgba(255,255,255,.02);
     }
     .seam{
-      position:absolute;
-      left:50%; top:0;
+      position:absolute; left:50%; top:0;
       width:2.6%; height:100%;
       transform: translateX(-50%);
       background:
@@ -370,7 +370,7 @@
     .signature{ position:absolute; left:34px; bottom:26px; font-weight:1200; color: rgba(16,19,31,.85); }
     .pageNum{ position:absolute; right:16px; bottom:12px; font-size:12px; color: rgba(16,19,31,.55); font-weight:1100; }
 
-    /* ====== MOBILE READER (2D, bonito, grande) ====== */
+    /* ====== MOBILE READER (iPhone Safari) ====== */
     .mShell{
       position:fixed; inset:0;
       display:flex;
@@ -393,7 +393,6 @@
       user-select:none;
     }
     .mTitleRow span{font-weight:1200;letter-spacing:.3px;font-size:13px;color:rgba(255,255,255,.92)}
-
     .mControls{
       display:flex; align-items:center; justify-content:center;
       gap:10px; flex-wrap:wrap;
@@ -410,6 +409,7 @@
       box-shadow: 0 10px 25px rgba(0,0,0,.20);
       user-select:none;
       -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
     .mBtn:disabled{opacity:.45}
 
@@ -471,7 +471,6 @@
     .mSign{color:rgba(16,19,31,.88)}
     .mNum{opacity:.8}
 
-    /* Cover overlay (móvil) */
     .mCover{
       position:absolute; inset:0;
       background:
@@ -486,6 +485,7 @@
       transform: translateX(0);
       opacity:1;
       transition: transform 650ms cubic-bezier(.18,.9,.18,1), opacity 450ms ease;
+      pointer-events:auto;
     }
     .mCoverInner{
       flex:1;
@@ -520,6 +520,9 @@
       justify-content:space-between;
       gap:10px;
       user-select:none;
+      cursor:pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
     .mCoverBtn{
       width:46px;height:46px;
@@ -537,7 +540,6 @@
       pointer-events:none;
     }
 
-    /* Mobile page transition */
     .mSwap{
       position:absolute; inset:0;
       z-index:3;
@@ -562,10 +564,7 @@
   <!-- ===== DESKTOP UI ===== -->
   <div id="desktopUI">
     <div class="topbar">
-      <div class="brand">
-        <div class="dot"></div>
-        <span>Libro de Fin de Año</span>
-      </div>
+      <div class="brand"><div class="dot"></div><span>Libro de Fin de Año</span></div>
       <div class="controls">
         <div class="pill"><strong>Página</strong> <span id="pageLabel">1</span>/<span id="pageTotal">1</span></div>
         <button id="openBtn">📖 Abrir</button>
@@ -624,18 +623,13 @@
     </div>
   </div>
 
-  <!-- ===== MOBILE UI (FORZADO EN iPhone/Safari) ===== -->
+  <!-- ===== MOBILE UI (FORZADO EN iPhone Safari) ===== -->
   <div id="mobileUI" class="mShell">
     <div class="mTop">
-      <div class="mTitleRow">
-        <div class="dot"></div>
-        <span>Libro de Fin de Año</span>
-      </div>
+      <div class="mTitleRow"><div class="dot"></div><span>Libro de Fin de Año</span></div>
 
       <div class="mControls">
-        <div class="pill" style="box-shadow:none">
-          <strong>Página</strong> <span id="mPageLabel">1</span>/<span id="mPageTotal">1</span>
-        </div>
+        <div class="pill" style="box-shadow:none"><strong>Página</strong> <span id="mPageLabel">1</span>/<span id="mPageTotal">1</span></div>
         <button class="mBtn" id="mOpenBtn">📖 Abrir</button>
         <button class="mBtn" id="mPrevBtn">⟵</button>
         <button class="mBtn" id="mNextBtn">⟶</button>
@@ -799,15 +793,44 @@ Feliz fin de año, mi vida.`,
 
     const LAST_PAGE = pages.length - 1;
 
-    // ✅ Detecta iPhone/iPad Safari y fuerza mobile
+    // ✅ Detecta iPhone/iPad Safari y fuerza mobile (evita bug 3D)
     const ua = navigator.userAgent;
     const isIOS = /iPhone|iPad|iPod/i.test(ua);
     const isWebKit = /AppleWebKit/i.test(ua);
     const isSafari = isWebKit && !/CriOS|FxiOS|OPiOS|EdgiOS/i.test(ua);
+    if (isIOS && isSafari) document.body.classList.add("force-mobile");
 
-    // En iPhone Safari: FORZAR mobile UI (evita espejo/3D bug)
-    if (isIOS && isSafari) {
-      document.body.classList.add("force-mobile");
+    // ===== Helpers =====
+    function esc(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    // ✅ Tap helper (iPhone-friendly): click + touchend + pointerup
+    function bindTap(el, fn){
+      if(!el) return;
+      let locked = false;
+
+      const run = (e) => {
+        if (locked) return;
+        locked = true;
+        try { fn(e); } finally {
+          setTimeout(()=> locked=false, 150);
+        }
+      };
+
+      el.addEventListener("click", (e)=> { run(e); });
+
+      el.addEventListener("touchend", (e)=> {
+        e.preventDefault();
+        run(e);
+      }, { passive:false });
+
+      el.addEventListener("pointerup", (e)=> { run(e); });
     }
 
     // ===== Desktop fill =====
@@ -818,12 +841,10 @@ Feliz fin de año, mi vida.`,
     if (yourName)  yourName.textContent  = CONFIG.yourName;
     if (coverSub)  coverSub.textContent  = CONFIG.coverSub;
 
-    // ===== Mobile fill =====
-    document.getElementById("mLoverName").textContent = CONFIG.loverName;
-    document.getElementById("mYourName").textContent  = CONFIG.yourName;
-    document.getElementById("mCoverSub").textContent  = CONFIG.coverSub;
+    const pageTotal = document.getElementById("pageTotal");
+    if (pageTotal) pageTotal.textContent = LAST_PAGE;
 
-    // ===== Desktop logic (PC) =====
+    // ===== Desktop logic =====
     const bookWrap = document.getElementById("bookWrap");
     const frontCover = document.getElementById("frontCover");
     const openBtn = document.getElementById("openBtn");
@@ -833,17 +854,10 @@ Feliz fin de año, mi vida.`,
     const leftContent = document.getElementById("leftContent");
     const rightContent = document.getElementById("rightContent");
     const pageLabel = document.getElementById("pageLabel");
-    const pageTotal = document.getElementById("pageTotal");
     const spread = document.getElementById("spread");
-
-    if (pageTotal) pageTotal.textContent = LAST_PAGE;
 
     let dOpened=false, dCurrent=1, dLock=false;
 
-    function esc(s){
-      return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;").replaceAll("'","&#039;");
-    }
     function dHTML(p,n){
       if(!p) return `<div class="kicker"></div><div class="line"></div><div class="title"></div><div class="text"></div><div class="signature"></div><div class="pageNum"></div>`;
       return `
@@ -854,6 +868,7 @@ Feliz fin de año, mi vida.`,
         <div class="signature">${esc(p.signature||"")}</div>
         <div class="pageNum">${n}</div>`;
     }
+
     function dRender(smooth=true){
       if(!leftContent || !rightContent) return;
       const leftNum=dCurrent-1, rightNum=dCurrent;
@@ -862,9 +877,10 @@ Feliz fin de año, mi vida.`,
         leftContent.innerHTML=dHTML(pages[leftNum]||null,leftNum);
         rightContent.innerHTML=dHTML(pages[rightNum]||null,rightNum);
         if(pageLabel) pageLabel.textContent=String(dCurrent);
-        prevBtn && (prevBtn.disabled=!dOpened||dLock||dCurrent<=1);
-        nextBtn && (nextBtn.disabled=!dOpened||dLock||dCurrent>=LAST_PAGE);
-        restartBtn && (restartBtn.disabled=!dOpened||dLock);
+
+        if(prevBtn) prevBtn.disabled = !dOpened || dLock || dCurrent<=1;
+        if(nextBtn) nextBtn.disabled = !dOpened || dLock || dCurrent>=LAST_PAGE;
+        if(restartBtn) restartBtn.disabled = !dOpened || dLock;
       };
 
       if(!smooth){ doR(); return; }
@@ -878,6 +894,7 @@ Feliz fin de año, mi vida.`,
         });
       },120);
     }
+
     function dOpen(){
       if(dOpened) return;
       dOpened=true;
@@ -896,21 +913,31 @@ Feliz fin de año, mi vida.`,
       setTimeout(()=>{ dCurrent--; dLock=false; dRender(true); },140);
     }
 
-    openBtn && openBtn.addEventListener("click", dOpen);
-    frontCover && frontCover.addEventListener("click", dOpen);
-    nextBtn && nextBtn.addEventListener("click", dNext);
-    prevBtn && prevBtn.addEventListener("click", dPrev);
-    restartBtn && restartBtn.addEventListener("click", ()=>{ if(!dOpened||dLock) return; dCurrent=1; dRender(true); });
+    bindTap(openBtn, dOpen);
+    bindTap(frontCover, dOpen);
+    bindTap(nextBtn, dNext);
+    bindTap(prevBtn, dPrev);
+    bindTap(restartBtn, ()=>{ if(!dOpened||dLock) return; dCurrent=1; dRender(true); });
 
-    spread && spread.addEventListener("click",(e)=>{
-      if(!dOpened||dLock) return;
-      if(e.target.closest(".text")) return;
-      const r=spread.getBoundingClientRect();
-      const x=(e.clientX-r.left)/r.width;
-      if(x>.88) dNext(); else if(x<.12) dPrev();
-    });
+    if (spread){
+      spread.addEventListener("click",(e)=>{
+        if(!dOpened||dLock) return;
+        if(e.target.closest(".text")) return;
+        const r=spread.getBoundingClientRect();
+        const x=(e.clientX-r.left)/r.width;
+        if(x>.88) dNext(); else if(x<.12) dPrev();
+      });
+    }
 
-    // ===== Mobile logic (iPhone Safari) =====
+    // ===== Mobile fill =====
+    document.getElementById("mLoverName").textContent = CONFIG.loverName;
+    document.getElementById("mYourName").textContent  = CONFIG.yourName;
+    document.getElementById("mCoverSub").textContent  = CONFIG.coverSub;
+
+    const mPageTotal = document.getElementById("mPageTotal");
+    mPageTotal.textContent = LAST_PAGE;
+
+    // ===== Mobile logic (ARROWS FIXED) =====
     const mCard = document.getElementById("mCard");
     const mOpenBig = document.getElementById("mOpenBig");
     const mOpenBtn = document.getElementById("mOpenBtn");
@@ -923,12 +950,8 @@ Feliz fin de año, mi vida.`,
     const mText   = document.getElementById("mText");
     const mSign   = document.getElementById("mSign");
     const mNum    = document.getElementById("mNum");
-
     const mPageLabel = document.getElementById("mPageLabel");
-    const mPageTotal = document.getElementById("mPageTotal");
     const mSwap = document.getElementById("mSwap");
-
-    mPageTotal.textContent = LAST_PAGE;
 
     let mOpened=false, mCurrent=1, mBusy=false;
 
@@ -942,9 +965,10 @@ Feliz fin de año, mi vida.`,
       mPageLabel.textContent=String(n);
       mText.scrollTop=0;
 
-      mPrevBtn.disabled=!mOpened||mBusy||n<=1;
-      mNextBtn.disabled=!mOpened||mBusy||n>=LAST_PAGE;
-      mRestartBtn.disabled=!mOpened||mBusy;
+      // 👇 aunque estén disabled visualmente, igual permitimos abrir con flechas por JS
+      mPrevBtn.disabled = !mOpened || mBusy || n<=1;
+      mNextBtn.disabled = !mOpened || mBusy || n>=LAST_PAGE;
+      mRestartBtn.disabled = !mOpened || mBusy;
     }
 
     function mOpen(){
@@ -985,21 +1009,36 @@ Feliz fin de año, mi vida.`,
         mSwap.classList.remove("inR","inL","show");
         mSwap.innerHTML="";
         mCurrent=to;
-        mSet(mCurrent);
         mBusy=false;
+        mSet(mCurrent);
       },240);
     }
 
-    function mNext(){ if(mCurrent<LAST_PAGE) mSwapTo(mCurrent+1,"next"); }
-    function mPrev(){ if(mCurrent>1) mSwapTo(mCurrent-1,"prev"); }
+    function mNext(){
+      if(mCurrent < LAST_PAGE) mSwapTo(mCurrent+1,"next");
+    }
+    function mPrev(){
+      if(mCurrent > 1) mSwapTo(mCurrent-1,"prev");
+    }
+    function mRestart(){
+      if(mCurrent !== 1) mSwapTo(1,"prev");
+    }
 
-    mOpenBig.addEventListener("click", mOpen);
-    mOpenBtn.addEventListener("click", mOpen);
-    mNextBtn.addEventListener("click", mNext);
-    mPrevBtn.addEventListener("click", mPrev);
-    mRestartBtn.addEventListener("click", ()=>{ if(!mOpened||mBusy) return; mSwapTo(1,"prev"); });
+    // ✅ Arreglo clave: si toca flecha sin abrir, abre y luego hace acción
+    function ensureOpenThen(action){
+      if(!mOpened) mOpen();
+      // espera un toque para que quite la cover y no se sienta “bug”
+      setTimeout(()=> action(), 30);
+    }
 
-    // Swipe (solo si no empezó en el texto)
+    bindTap(mOpenBig, mOpen);
+    bindTap(mOpenBtn, mOpen);
+
+    bindTap(mNextBtn, ()=> ensureOpenThen(mNext));
+    bindTap(mPrevBtn, ()=> ensureOpenThen(mPrev));
+    bindTap(mRestartBtn, ()=> ensureOpenThen(mRestart));
+
+    // Swipe (solo si no empezó dentro del texto)
     let sx=0, sy=0, started=false, fromText=false;
     mCard.addEventListener("touchstart",(e)=>{
       if(!mOpened||mBusy) return;
@@ -1023,11 +1062,11 @@ Feliz fin de año, mi vida.`,
 
     // init
     window.addEventListener("load", ()=>{
-      // Desktop init (PC)
+      // Desktop init
       dRender(false);
       requestAnimationFrame(()=> bookWrap && bookWrap.classList.add("stage-in"));
 
-      // Mobile init (iPhone)
+      // Mobile init
       mCard.classList.add("show");
       mSet(1);
     });
