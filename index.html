@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#070818" />
   <title>Libro para Angie ✨</title>
 
   <style>
@@ -12,10 +13,17 @@
       --gold:#ffd37a;
       --ink:#14182a;
       --radius: 30px;
+
+      --safeTop: env(safe-area-inset-top, 0px);
+      --safeBottom: env(safe-area-inset-bottom, 0px);
+
+      --uiBlur: 12px;
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
+
+    /* 🔥 iOS viewport fix: usa svh/dvh si existe */
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
@@ -47,43 +55,70 @@
       50%{opacity:1; transform:translateY(-2px)}
     }
 
-    /* topbar */
+    /* topbar responsive */
     .topbar{
-      position:fixed; top:14px; left:14px; right:14px;
-      display:flex; align-items:center; justify-content:space-between;
+      position:fixed;
+      top: calc(14px + var(--safeTop));
+      left:14px; right:14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
       gap:10px;
       z-index:50;
+      flex-wrap:wrap;
     }
+
     .brand{
       display:flex; align-items:center; gap:10px;
       padding:10px 12px;
       border:1px solid rgba(255,255,255,.12);
       background: rgba(10,12,24,.45);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(var(--uiBlur));
       border-radius: 999px;
       box-shadow: 0 12px 30px rgba(0,0,0,.25);
       user-select:none;
+      max-width: 100%;
     }
     .dot{
       width:10px;height:10px;border-radius:50%;
       background: radial-gradient(circle at 30% 30%, #fff, var(--gold));
       box-shadow: 0 0 18px rgba(255,211,122,.55);
+      flex: 0 0 auto;
     }
-    .brand span{font-weight:1100;letter-spacing:.3px;font-size:13px;color:rgba(255,255,255,.92)}
-    .controls{display:flex;align-items:center;gap:10px}
+    .brand span{
+      font-weight:1100;
+      letter-spacing:.3px;
+      font-size:13px;
+      color:rgba(255,255,255,.92);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 60vw;
+    }
+
+    .controls{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
     .pill{
       padding:10px 12px;
       border-radius:999px;
       border:1px solid rgba(255,255,255,.12);
       background: rgba(10,12,24,.35);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(var(--uiBlur));
       font-size:12px;
       color:rgba(255,255,255,.78);
       display:flex; gap:8px; align-items:center;
       box-shadow: 0 10px 25px rgba(0,0,0,.18);
       user-select:none;
+      white-space:nowrap;
     }
     .pill strong{color:#fff}
+
     button{
       border:1px solid rgba(255,255,255,.14);
       background: rgba(10,12,24,.45);
@@ -93,17 +128,28 @@
       cursor:pointer;
       font-weight:1100;
       letter-spacing:.2px;
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(var(--uiBlur));
       transition: transform .15s ease, border-color .2s ease, opacity .2s ease;
       box-shadow: 0 10px 25px rgba(0,0,0,.22);
       user-select:none;
+      white-space:nowrap;
+      -webkit-tap-highlight-color: transparent;
     }
     button:hover{ transform: translateY(-1px); border-color: rgba(255,211,122,.45) }
     button:active{ transform: translateY(0px) scale(.99) }
     button:disabled{ opacity:.45; cursor:not-allowed }
 
-    .wrap{height:100%; display:grid; place-items:center; padding:18px}
+    /* wrap con espacio para topbar y safe bottom */
+    .wrap{
+      height:100%;
+      display:grid;
+      place-items:center;
+      padding: 18px;
+      padding-top: calc(92px + var(--safeTop));
+      padding-bottom: calc(24px + var(--safeBottom));
+    }
 
+    /* Scene */
     .scene{
       width:min(1320px, 98vw);
       height:min(860px, 84vh);
@@ -112,7 +158,18 @@
       filter: drop-shadow(0 28px 55px rgba(0,0,0,.34));
     }
 
+    /* escala responsive SIN romper 3D */
+    .bookScaler{
+      position:absolute; inset:0;
+      display:grid;
+      place-items:center;
+      transform: scale(1);
+      transform-origin: center;
+    }
+
     .bookWrap{
+      width:100%;
+      height:100%;
       position:absolute; inset:0;
       transform-style: preserve-3d;
       opacity:0;
@@ -229,6 +286,7 @@
       transition: transform 1100ms cubic-bezier(.12,.92,.18,1);
       z-index: 30;
       cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
     }
     .frontCover::before{
       content:"";
@@ -345,6 +403,8 @@
       overflow:hidden;
       box-shadow: 0 18px 50px rgba(0,0,0,.18);
       background: rgba(255,255,255,.02);
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
     .seam{
@@ -408,7 +468,7 @@
       margin-bottom: 10px;
     }
 
-    /* ✅ Scroll suave y no “pegado” */
+    /* ✅ Scroll suave + wheel suave */
     .text{
       font-size: 16px;
       line-height: 1.65;
@@ -427,6 +487,9 @@
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
       scroll-snap-type: none;
+
+      /* iOS: que se sienta menos “pegado” */
+      -webkit-overflow-scrolling: touch;
     }
 
     .text::-webkit-scrollbar{ width: 12px; }
@@ -546,13 +609,14 @@
 
     .hint{
       position:fixed;
-      bottom:14px; left:50%;
+      bottom: calc(14px + var(--safeBottom));
+      left:50%;
       transform: translateX(-50%);
       padding: 10px 14px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,.12);
       background: rgba(10,12,24,.35);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(var(--uiBlur));
       color: rgba(255,255,255,.78);
       font-size: 12px;
       box-shadow: 0 10px 25px rgba(0,0,0,.18);
@@ -561,6 +625,68 @@
       max-width: 92vw;
       user-select:none;
     }
+
+    /* ✅ Responsive para iPhone 11 y similares */
+    @media (max-width: 520px){
+      .scene{
+        width: 100%;
+        /* usa svh si existe */
+        height: min(740px, 70vh);
+        perspective: 1800px;
+      }
+
+      .bookScaler{ transform: scale(.78); }
+
+      .topbar{
+        left:10px; right:10px;
+        gap:8px;
+      }
+
+      .brand{
+        padding:8px 10px;
+      }
+      .brand span{
+        font-size:12px;
+        max-width: 58vw;
+      }
+
+      .controls{
+        gap:6px;
+      }
+
+      button{
+        padding:9px 10px;
+        font-size:12px;
+      }
+
+      .pill{
+        padding:8px 10px;
+        font-size:11px;
+      }
+
+      .pageContent{
+        padding: 24px 22px 18px;
+      }
+      .title{ font-size: 22px; }
+      .text{
+        font-size: 14.5px;
+        height: calc(100% - 150px);
+        padding-right: 10px;
+      }
+      .signature{ left:22px; bottom:18px; }
+      .pageNum{ right:12px; bottom:10px; }
+      .coverTitle{ font-size: 30px; }
+      .coverSub{ font-size: 13px; }
+      .coverInner{ padding: 18px; }
+    }
+
+    /* súper pequeño */
+    @media (max-width: 390px){
+      .bookScaler{ transform: scale(.72); }
+      .scene{ height: min(700px, 68vh); }
+      .hint{ font-size: 11px; }
+    }
+
   </style>
 </head>
 
@@ -587,70 +713,72 @@
 
   <div class="wrap">
     <div class="scene">
-      <div class="bookWrap" id="bookWrap">
-        <div class="book">
-          <div class="base"></div>
-          <div class="block"></div>
-          <div class="spine"></div>
+      <div class="bookScaler" id="bookScaler">
+        <div class="bookWrap" id="bookWrap">
+          <div class="book">
+            <div class="base"></div>
+            <div class="block"></div>
+            <div class="spine"></div>
 
-          <!-- back cover -->
-          <div class="cover backCover">
-            <div class="coverInner">
-              <div class="badge">✨ 31 de diciembre • Nuestro año</div>
-              <div class="coverTitle">Un libro para<br><em id="loverName"></em></div>
-              <div class="coverSub" id="coverSub"></div>
-              <div style="margin-top:auto; opacity:.85; font-size:12px; line-height:1.55">
-                De: <strong style="color:#fff" id="yourName"></strong><br/>
-                (para ti, con cariño)
-              </div>
-            </div>
-          </div>
-
-          <!-- pages area -->
-          <div class="pagesArea" id="pagesArea">
-            <div class="spread" id="spread">
-              <div class="pagePanel left">
-                <div class="pageContent" id="leftContent"></div>
-              </div>
-              <div class="pagePanel right">
-                <div class="pageContent" id="rightContent"></div>
-              </div>
-
-              <div class="seam"></div>
-
-              <!-- Flipper -->
-              <div class="flipper" id="flipper">
-                <div class="flipFace frontFace">
-                  <div class="pageContent" id="flipFront"></div>
-                </div>
-                <div class="flipFace backFace">
-                  <div class="pageContent" id="flipBack"></div>
+            <!-- back cover -->
+            <div class="cover backCover">
+              <div class="coverInner">
+                <div class="badge">✨ 31 de diciembre • Nuestro año</div>
+                <div class="coverTitle">Un libro para<br><em id="loverName"></em></div>
+                <div class="coverSub" id="coverSub"></div>
+                <div style="margin-top:auto; opacity:.85; font-size:12px; line-height:1.55">
+                  De: <strong style="color:#fff" id="yourName"></strong><br/>
+                  (para ti, con cariño)
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- front cover -->
-          <div class="cover frontCover" id="frontCover">
-            <div class="coverInner">
-              <div class="badge">💛 Para mi amor</div>
-              <div class="coverTitle">Angie…<br><em>abre esto</em></div>
-              <div class="coverSub">No quería dejarlo solo en mensajes. Quería que quedara aquí.</div>
-              <div class="openCta">
-                <div class="txt">
-                  <strong>Clic para abrir</strong>
-                  <span>o usa el botón “Abrir”</span>
+            <!-- pages area -->
+            <div class="pagesArea" id="pagesArea">
+              <div class="spread" id="spread">
+                <div class="pagePanel left">
+                  <div class="pageContent" id="leftContent"></div>
                 </div>
-                <div class="pulse">↪</div>
+                <div class="pagePanel right">
+                  <div class="pageContent" id="rightContent"></div>
+                </div>
+
+                <div class="seam"></div>
+
+                <!-- Flipper -->
+                <div class="flipper" id="flipper">
+                  <div class="flipFace frontFace">
+                    <div class="pageContent" id="flipFront"></div>
+                  </div>
+                  <div class="flipFace backFace">
+                    <div class="pageContent" id="flipBack"></div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
 
+            <!-- front cover -->
+            <div class="cover frontCover" id="frontCover">
+              <div class="coverInner">
+                <div class="badge">💛 Para mi amor</div>
+                <div class="coverTitle">Angie…<br><em>abre esto</em></div>
+                <div class="coverSub">No quería dejarlo solo en mensajes. Quería que quedara aquí.</div>
+                <div class="openCta">
+                  <div class="txt">
+                    <strong>Toca para abrir</strong>
+                    <span>o usa el botón “Abrir”</span>
+                  </div>
+                  <div class="pulse">↪</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
 
       <div class="hint">
-        Scroll suave dentro del texto. Para pasar página: clic SOLO en las esquinas.
+        📱 En teléfono: desliza ← / → para pasar página. En PC: clic en esquinas o usa ⟵ ⟶.
       </div>
     </div>
   </div>
@@ -698,7 +826,7 @@ Me importas. De verdad.`,
 
 • 4 de octubre — tu cumpleaños.
   Cantarte “cumpleaños” ahí fue demasiado lindo.
-  Me acuerdo de tu cara, de la vibra, de ese momento “real”.
+  Me acuerdo de tu cara, de la vibra, de ese momento real.
 
 • 21 de julio — la foto del espejo.
   No sé por qué, pero me encanta.
@@ -732,7 +860,7 @@ Y me encanta tu cara cuando estás feliz, cuando estás emocionada, cuando te da
 
 También amo esas cosas que nadie ve:
 tu paciencia, tu corazón, tu manera de cuidar.
-Me gusta cómo eres tú, sin “actuar”, sin aparentar.
+Me gusta cómo eres tú, sin actuar, sin aparentar.
 
 Y no es broma:
 tú haces que todo se sienta mejor.`,
@@ -744,7 +872,7 @@ tú haces que todo se sienta mejor.`,
         text:
 `Quiero un año bonito para los dos.
 Quiero verte feliz y tranquila.
-Quiero que tengamos más tiempo juntos, más planes, más “nosotros”.
+Quiero que tengamos más tiempo juntos, más planes, más nosotros.
 
 Quiero más fotos (porque sí, tengo un montón y quiero más).
 Quiero más salidas, más comidas ricas, más momentos en paz.
@@ -862,7 +990,7 @@ Feliz fin de año, mi vida.`,
       `;
     }
 
-    // ✅ wheel suave (quita lo “pegado”)
+    /* ✅ wheel suave (PC) */
     function enableSmoothWheel(){
       document.querySelectorAll(".text").forEach(el => {
         if (el.dataset.wheelReady === "1") return;
@@ -872,15 +1000,16 @@ Feliz fin de año, mi vida.`,
         let velocity = 0;
 
         el.addEventListener("wheel", (e) => {
+          // Si es touchpad, igual va bien; esto ayuda a que no se sienta “pegado”
           e.preventDefault();
 
           const delta = e.deltaY;
-          velocity += delta * 0.48; // sensibilidad (baja = más suave)
+          velocity += delta * 0.48;
 
           if (anim) return;
 
           const step = () => {
-            velocity *= 0.86; // fricción (alta = se siente más “suave”)
+            velocity *= 0.86;
             el.scrollTop += velocity;
 
             if (Math.abs(velocity) > 0.35) {
@@ -902,7 +1031,6 @@ Feliz fin de año, mi vida.`,
 
       setTimeout(() => {
         renderFn();
-        // reset scroll arriba
         document.querySelectorAll(".text").forEach(t => t.scrollTop = 0);
         enableSmoothWheel();
 
@@ -993,7 +1121,7 @@ Feliz fin de año, mi vida.`,
       renderSpread(true);
     });
 
-    // ✅ pasar página SOLO esquinas
+    /* ✅ PC: pasar página solo tocando esquinas (no interfiere con scroll) */
     spread.addEventListener("click", (e) => {
       if (!isOpened || isAnimating) return;
       if (e.target.closest(".text")) return;
@@ -1005,6 +1133,35 @@ Feliz fin de año, mi vida.`,
       else if (x < 0.12) flipPrev();
     });
 
+    /* ✅ Móvil: Swipe para pasar página (sin molestar el scroll del texto) */
+    let touchStartX = 0, touchStartY = 0, touchActive = false, touchFromText = false;
+
+    spread.addEventListener("touchstart", (e) => {
+      if (!isOpened || isAnimating) return;
+      const t = e.touches[0];
+      touchStartX = t.clientX;
+      touchStartY = t.clientY;
+      touchActive = true;
+      touchFromText = !!e.target.closest(".text");
+    }, { passive: true });
+
+    spread.addEventListener("touchend", (e) => {
+      if (!touchActive || !isOpened || isAnimating) return;
+      touchActive = false;
+
+      if (touchFromText) return; // si empezó en texto, es scroll normal
+
+      const t = e.changedTouches[0];
+      const dx = t.clientX - touchStartX;
+      const dy = t.clientY - touchStartY;
+
+      // swipe horizontal claro
+      if (Math.abs(dx) > 55 && Math.abs(dy) < 45) {
+        if (dx < 0) flipNext(); // swipe izquierda -> siguiente
+        else flipPrev();        // swipe derecha -> anterior
+      }
+    }, { passive: true });
+
     window.addEventListener("keydown", (e) => {
       if (!isOpened){
         if (e.key === "Enter" || e.key === " ") openBook();
@@ -1013,14 +1170,6 @@ Feliz fin de año, mi vida.`,
       if (isAnimating) return;
       if (e.key === "ArrowRight") flipNext();
       if (e.key === "ArrowLeft") flipPrev();
-      if (e.key === "ArrowDown") {
-        const t = document.querySelector("#rightContent .text");
-        if (t) t.scrollTop += 70;
-      }
-      if (e.key === "ArrowUp") {
-        const t = document.querySelector("#rightContent .text");
-        if (t) t.scrollTop -= 70;
-      }
     });
 
     window.addEventListener("load", () => {
