@@ -1,0 +1,1032 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Libro para Angie ✨</title>
+
+  <style>
+    :root{
+      --bg1:#05060f;
+      --bg2:#0b1030;
+      --gold:#ffd37a;
+      --ink:#14182a;
+      --radius: 30px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      overflow:hidden;
+      color:#fff;
+      background:
+        radial-gradient(1200px 650px at 12% 15%, rgba(255,211,122,.22), transparent 55%),
+        radial-gradient(900px 560px at 85% 25%, rgba(140,180,255,.18), transparent 55%),
+        radial-gradient(900px 700px at 55% 90%, rgba(255,130,190,.12), transparent 60%),
+        linear-gradient(120deg, var(--bg1), var(--bg2));
+    }
+
+    .sparkles{
+      position:fixed; inset:0;
+      pointer-events:none;
+      background:
+        radial-gradient(2px 2px at 14% 32%, rgba(255,255,255,.9), transparent 60%),
+        radial-gradient(1.6px 1.6px at 27% 62%, rgba(255,255,255,.85), transparent 60%),
+        radial-gradient(2.2px 2.2px at 66% 22%, rgba(255,255,255,.70), transparent 60%),
+        radial-gradient(1.7px 1.7px at 78% 56%, rgba(255,255,255,.78), transparent 60%),
+        radial-gradient(2px 2px at 48% 82%, rgba(255,255,255,.62), transparent 60%),
+        radial-gradient(1.5px 1.5px at 90% 35%, rgba(255,255,255,.66), transparent 60%);
+      filter: drop-shadow(0 0 12px rgba(255,255,255,.14));
+      opacity:.85;
+      animation: twinkle 4.6s ease-in-out infinite;
+    }
+    @keyframes twinkle{
+      0%,100%{opacity:.55; transform:translateY(0)}
+      50%{opacity:1; transform:translateY(-2px)}
+    }
+
+    /* topbar */
+    .topbar{
+      position:fixed; top:14px; left:14px; right:14px;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+      z-index:50;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      padding:10px 12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(10,12,24,.45);
+      backdrop-filter: blur(12px);
+      border-radius: 999px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.25);
+      user-select:none;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, #fff, var(--gold));
+      box-shadow: 0 0 18px rgba(255,211,122,.55);
+    }
+    .brand span{font-weight:1100;letter-spacing:.3px;font-size:13px;color:rgba(255,255,255,.92)}
+    .controls{display:flex;align-items:center;gap:10px}
+    .pill{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(10,12,24,.35);
+      backdrop-filter: blur(12px);
+      font-size:12px;
+      color:rgba(255,255,255,.78);
+      display:flex; gap:8px; align-items:center;
+      box-shadow: 0 10px 25px rgba(0,0,0,.18);
+      user-select:none;
+    }
+    .pill strong{color:#fff}
+    button{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(10,12,24,.45);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:1100;
+      letter-spacing:.2px;
+      backdrop-filter: blur(12px);
+      transition: transform .15s ease, border-color .2s ease, opacity .2s ease;
+      box-shadow: 0 10px 25px rgba(0,0,0,.22);
+      user-select:none;
+    }
+    button:hover{ transform: translateY(-1px); border-color: rgba(255,211,122,.45) }
+    button:active{ transform: translateY(0px) scale(.99) }
+    button:disabled{ opacity:.45; cursor:not-allowed }
+
+    .wrap{height:100%; display:grid; place-items:center; padding:18px}
+
+    .scene{
+      width:min(1320px, 98vw);
+      height:min(860px, 84vh);
+      perspective: 2600px;
+      position:relative;
+      filter: drop-shadow(0 28px 55px rgba(0,0,0,.34));
+    }
+
+    .bookWrap{
+      position:absolute; inset:0;
+      transform-style: preserve-3d;
+      opacity:0;
+      transform:
+        translateY(44px)
+        translateZ(-620px)
+        rotateX(24deg)
+        rotateY(-18deg)
+        scale(.86);
+      will-change: transform, opacity;
+    }
+    .bookWrap.stage-in{
+      opacity:1;
+      transition: transform 1250ms cubic-bezier(.16,.86,.2,1), opacity 650ms ease;
+      transform:
+        translateY(0px)
+        translateZ(0px)
+        rotateX(10deg)
+        rotateY(-6deg)
+        scale(1);
+    }
+    .bookWrap.opened{
+      transition: transform 900ms cubic-bezier(.16,.86,.2,1);
+      transform:
+        translateY(0px)
+        translateZ(14px)
+        rotateX(7deg)
+        rotateY(-1deg)
+        scale(1);
+    }
+
+    .book{ position:absolute; inset:0; transform-style: preserve-3d; }
+
+    .base{
+      position:absolute; inset:0;
+      border-radius: calc(var(--radius) + 12px);
+      background:
+        radial-gradient(980px 280px at 50% 112%, rgba(255,211,122,.11), transparent 60%),
+        linear-gradient(90deg, rgba(0,0,0,.35), transparent 12%, transparent 88%, rgba(0,0,0,.35)),
+        rgba(10,12,24,.26);
+      border: 1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 34px 90px rgba(0,0,0,.35);
+      transform: translateZ(-56px);
+    }
+
+    .block{
+      position:absolute;
+      left:5%; top:6%;
+      width:90%;
+      height:88%;
+      border-radius: var(--radius);
+      transform: translateZ(10px);
+      background:
+        linear-gradient(90deg,
+          rgba(0,0,0,.16),
+          rgba(255,255,255,.06) 12%,
+          rgba(255,255,255,.07) 50%,
+          rgba(255,255,255,.06) 88%,
+          rgba(0,0,0,.16)
+        ),
+        radial-gradient(900px 240px at 50% 115%, rgba(255,211,122,.10), transparent 60%),
+        rgba(255,255,255,.05);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.08),
+        0 22px 60px rgba(0,0,0,.22);
+    }
+
+    .spine{
+      position:absolute;
+      left:50%;
+      top:7%;
+      width:2.2%;
+      height:86%;
+      transform: translateX(-50%) translateZ(18px);
+      border-radius: 16px;
+      background:
+        linear-gradient(180deg, rgba(255,211,122,.16), rgba(255,255,255,.06) 35%, rgba(255,211,122,.12)),
+        linear-gradient(90deg, rgba(0,0,0,.35), transparent 35%, transparent 65%, rgba(0,0,0,.35));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+      opacity:.9;
+    }
+
+    /* Covers */
+    .cover{
+      position:absolute;
+      top:6%;
+      height:88%;
+      width:45%;
+      overflow:hidden;
+      transform-style: preserve-3d;
+      box-shadow: 0 18px 60px rgba(0,0,0,.25);
+    }
+    .backCover{
+      left:5%;
+      border-radius: var(--radius) 0 0 var(--radius);
+      background:
+        radial-gradient(900px 520px at 30% 25%, rgba(255,211,122,.18), transparent 56%),
+        radial-gradient(900px 520px at 75% 70%, rgba(140,180,255,.14), transparent 58%),
+        linear-gradient(135deg, rgba(26,23,100,.96), rgba(7,8,24,.94));
+      border:1px solid rgba(255,255,255,.12);
+      transform: translateZ(26px);
+    }
+    .frontCover{
+      left:50%;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      transform-origin: left;
+      background:
+        radial-gradient(900px 520px at 30% 25%, rgba(255,211,122,.20), transparent 56%),
+        radial-gradient(900px 520px at 78% 70%, rgba(255,130,190,.12), transparent 58%),
+        linear-gradient(135deg, rgba(26,23,100,.96), rgba(7,8,24,.94));
+      border:1px solid rgba(255,255,255,.12);
+      transform: translateZ(34px) rotateY(0deg);
+      transition: transform 1100ms cubic-bezier(.12,.92,.18,1);
+      z-index: 30;
+      cursor:pointer;
+    }
+    .frontCover::before{
+      content:"";
+      position:absolute; inset:0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(255,255,255,.09), transparent 18%, transparent 86%, rgba(0,0,0,.28));
+      opacity:.9;
+      pointer-events:none;
+      mix-blend-mode: screen;
+    }
+    .bookWrap.opened .frontCover{
+      transform: translateZ(34px) rotateY(-172deg);
+      cursor:default;
+    }
+
+    .coverInner{
+      position:absolute; inset:16px;
+      border-radius: calc(var(--radius) - 12px);
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      backdrop-filter: blur(10px);
+      padding: 22px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      overflow:hidden;
+    }
+    .badge{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      width:max-content;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,211,122,.38);
+      background: rgba(255,211,122,.10);
+      color: rgba(255,255,255,.94);
+      font-size: 12px;
+      font-weight: 1100;
+      letter-spacing:.25px;
+    }
+    .coverTitle{
+      font-size: 36px;
+      font-weight: 1200;
+      line-height: 1.05;
+      letter-spacing: .3px;
+      margin-top: 2px;
+    }
+    .coverTitle em{
+      font-style:normal;
+      color: var(--gold);
+      text-shadow: 0 16px 35px rgba(255,211,122,.18);
+    }
+    .coverSub{
+      color: rgba(255,255,255,.78);
+      line-height:1.55;
+      font-size: 14px;
+      max-width: 52ch;
+    }
+
+    .openCta{
+      margin-top:auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 12px 12px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      box-shadow: 0 18px 40px rgba(0,0,0,.18);
+      user-select:none;
+    }
+    .openCta .txt{display:flex; flex-direction:column; gap:2px}
+    .openCta .txt strong{font-size:13px}
+    .openCta .txt span{font-size:12px; opacity:.8}
+    .pulse{
+      width:44px; height:44px;
+      border-radius: 16px;
+      border:1px solid rgba(255,211,122,.35);
+      display:grid; place-items:center;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.25), rgba(255,211,122,.12));
+      box-shadow: 0 0 0 0 rgba(255,211,122,.25);
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes pulse{
+      0%{ box-shadow: 0 0 0 0 rgba(255,211,122,.26) }
+      70%{ box-shadow: 0 0 0 14px rgba(255,211,122,0) }
+      100%{ box-shadow: 0 0 0 0 rgba(255,211,122,0) }
+    }
+
+    /* Pages */
+    .pagesArea{
+      position:absolute;
+      left:5%; top:6%;
+      width:90%; height:88%;
+      transform-style: preserve-3d;
+      transform: translateZ(22px);
+      z-index: 20;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity 420ms ease;
+    }
+    .bookWrap.opened .pagesArea{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .spread{
+      position:absolute; inset:0;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      border-radius: var(--radius);
+      overflow:hidden;
+      box-shadow: 0 18px 50px rgba(0,0,0,.18);
+      background: rgba(255,255,255,.02);
+    }
+
+    .seam{
+      position:absolute;
+      left:50%; top:0;
+      width:2.6%;
+      height:100%;
+      transform: translateX(-50%);
+      background:
+        radial-gradient(130px 320px at 50% 50%, rgba(0,0,0,.20), transparent 68%),
+        linear-gradient(90deg, rgba(0,0,0,.16), transparent 35%, transparent 65%, rgba(0,0,0,.16));
+      opacity:.6;
+      pointer-events:none;
+      z-index: 6;
+    }
+
+    .pagePanel{
+      position:relative;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.93), rgba(255,255,255,.80)),
+        radial-gradient(900px 520px at 20% 12%, rgba(255,211,122,.14), transparent 55%),
+        radial-gradient(900px 520px at 86% 62%, rgba(140,180,255,.10), transparent 55%);
+    }
+    .pagePanel.left::after{
+      content:""; position:absolute; inset:0;
+      background: linear-gradient(90deg, rgba(0,0,0,.06), transparent 26%, transparent 100%);
+      opacity:.45; pointer-events:none; mix-blend-mode:multiply;
+    }
+    .pagePanel.right::after{
+      content:""; position:absolute; inset:0;
+      background: linear-gradient(270deg, rgba(0,0,0,.07), transparent 26%, transparent 100%);
+      opacity:.45; pointer-events:none; mix-blend-mode:multiply;
+    }
+
+    .pageContent{
+      position:absolute; inset:0;
+      padding: 34px 34px 26px;
+      color: var(--ink);
+      transition: opacity 180ms ease, transform 180ms ease;
+      will-change: opacity, transform;
+    }
+    .pageContent.fadeOut{ opacity:0; transform: translateY(2px); }
+
+    .kicker{
+      font-weight:1100;
+      letter-spacing:.35px;
+      text-transform:uppercase;
+      font-size:12px;
+      color: rgba(16,19,31,.68);
+    }
+    .line{
+      height:1px;
+      margin:10px 0 12px;
+      background: linear-gradient(90deg, rgba(0,0,0,.12), rgba(255,211,122,.45), rgba(0,0,0,.08));
+    }
+    .title{
+      font-size: 28px;
+      font-weight: 1200;
+      letter-spacing:.2px;
+      line-height:1.1;
+      margin-bottom: 10px;
+    }
+
+    /* ✅ Scroll suave y no “pegado” */
+    .text{
+      font-size: 16px;
+      line-height: 1.65;
+      color: rgba(16,19,31,.86);
+      white-space: pre-wrap;
+
+      height: calc(100% - 170px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 14px;
+
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+      touch-action: pan-y;
+
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: none;
+    }
+
+    .text::-webkit-scrollbar{ width: 12px; }
+    .text::-webkit-scrollbar-track{
+      background: rgba(0,0,0,.08);
+      border-radius: 999px;
+    }
+    .text::-webkit-scrollbar-thumb{
+      background: rgba(0,0,0,.20);
+      border-radius: 999px;
+      border: 3px solid rgba(255,255,255,.65);
+    }
+    .text::-webkit-scrollbar-thumb:hover{
+      background: rgba(0,0,0,.28);
+    }
+
+    .signature{
+      position:absolute;
+      left:34px;
+      bottom:26px;
+      font-weight:1200;
+      letter-spacing:.2px;
+      color: rgba(16,19,31,.85);
+    }
+    .pageNum{
+      position:absolute;
+      right:16px; bottom:12px;
+      font-size:12px;
+      color: rgba(16,19,31,.55);
+      font-weight:1100;
+      letter-spacing:.25px;
+    }
+
+    /* Flipper */
+    .flipper{
+      position:absolute;
+      top:0; bottom:0;
+      width:50%;
+      transform-style: preserve-3d;
+      z-index: 30;
+      display:none;
+      filter: drop-shadow(0 18px 22px rgba(0,0,0,.25));
+    }
+    .flipFace{
+      position:absolute; inset:0;
+      backface-visibility:hidden;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.93), rgba(255,255,255,.80)),
+        radial-gradient(900px 520px at 20% 12%, rgba(255,211,122,.12), transparent 55%),
+        radial-gradient(900px 520px at 86% 62%, rgba(140,180,255,.10), transparent 55%);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+      overflow:hidden;
+    }
+    .flipper::before{
+      content:"";
+      position:absolute; inset:0;
+      pointer-events:none;
+      opacity:.0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.45) 45%, transparent 75%);
+      transform: translateX(-40%);
+    }
+    .flipper::after{
+      content:"";
+      position:absolute; inset:0;
+      pointer-events:none;
+      opacity:.0;
+      background: linear-gradient(90deg, rgba(0,0,0,.22), transparent 40%, transparent 60%, rgba(0,0,0,.10));
+      mix-blend-mode:multiply;
+    }
+
+    .flipper.next{ left:50%; transform-origin:left; border-radius: 12px var(--radius) var(--radius) 12px; }
+    .flipper.next .frontFace{ transform: rotateY(0deg); }
+    .flipper.next .backFace{ transform: rotateY(180deg); }
+
+    .flipper.prev{ left:0; transform-origin:right; border-radius: var(--radius) 12px 12px var(--radius); }
+    .flipper.prev .frontFace{ transform: rotateY(0deg); }
+    .flipper.prev .backFace{ transform: rotateY(-180deg); }
+
+    .flipper.animNext{ animation: flipNext 920ms cubic-bezier(.2,.82,.15,1) forwards; }
+    @keyframes flipNext{
+      0%   { transform: rotateY(0deg) translateX(0px) rotateZ(0deg); }
+      35%  { transform: rotateY(-70deg) translateX(-10px) rotateZ(-1deg); }
+      70%  { transform: rotateY(-140deg) translateX(-18px) rotateZ(-2deg); }
+      100% { transform: rotateY(-180deg) translateX(-22px) rotateZ(-2.5deg); }
+    }
+
+    .flipper.animPrev{ animation: flipPrev 920ms cubic-bezier(.2,.82,.15,1) forwards; }
+    @keyframes flipPrev{
+      0%   { transform: rotateY(0deg) translateX(0px) rotateZ(0deg); }
+      35%  { transform: rotateY(70deg) translateX(10px) rotateZ(1deg); }
+      70%  { transform: rotateY(140deg) translateX(18px) rotateZ(2deg); }
+      100% { transform: rotateY(180deg) translateX(22px) rotateZ(2.5deg); }
+    }
+
+    .flipper.animNext::before,
+    .flipper.animPrev::before{
+      animation: shineMove 920ms ease forwards;
+      opacity: .55;
+    }
+    @keyframes shineMove{
+      0%{ transform: translateX(-55%); opacity:.0; }
+      30%{ opacity:.55; }
+      70%{ opacity:.35; }
+      100%{ transform: translateX(35%); opacity:.0; }
+    }
+    .flipper.animNext::after,
+    .flipper.animPrev::after{
+      animation: shadowPulse 920ms ease forwards;
+      opacity: .45;
+    }
+    @keyframes shadowPulse{
+      0%{ opacity:.0; }
+      25%{ opacity:.35; }
+      60%{ opacity:.45; }
+      100%{ opacity:.0; }
+    }
+
+    .hint{
+      position:fixed;
+      bottom:14px; left:50%;
+      transform: translateX(-50%);
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(10,12,24,.35);
+      backdrop-filter: blur(12px);
+      color: rgba(255,255,255,.78);
+      font-size: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.18);
+      z-index:50;
+      text-align:center;
+      max-width: 92vw;
+      user-select:none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="sparkles"></div>
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="dot"></div>
+      <span>Libro de Fin de Año</span>
+    </div>
+
+    <div class="controls">
+      <div class="pill">
+        <strong>Página</strong>
+        <span id="pageLabel">1</span>/<span id="pageTotal">1</span>
+      </div>
+      <button id="openBtn">📖 Abrir</button>
+      <button id="prevBtn">⟵</button>
+      <button id="nextBtn">⟶</button>
+      <button id="restartBtn">↺</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="scene">
+      <div class="bookWrap" id="bookWrap">
+        <div class="book">
+          <div class="base"></div>
+          <div class="block"></div>
+          <div class="spine"></div>
+
+          <!-- back cover -->
+          <div class="cover backCover">
+            <div class="coverInner">
+              <div class="badge">✨ 31 de diciembre • Nuestro año</div>
+              <div class="coverTitle">Un libro para<br><em id="loverName"></em></div>
+              <div class="coverSub" id="coverSub"></div>
+              <div style="margin-top:auto; opacity:.85; font-size:12px; line-height:1.55">
+                De: <strong style="color:#fff" id="yourName"></strong><br/>
+                (para ti, con cariño)
+              </div>
+            </div>
+          </div>
+
+          <!-- pages area -->
+          <div class="pagesArea" id="pagesArea">
+            <div class="spread" id="spread">
+              <div class="pagePanel left">
+                <div class="pageContent" id="leftContent"></div>
+              </div>
+              <div class="pagePanel right">
+                <div class="pageContent" id="rightContent"></div>
+              </div>
+
+              <div class="seam"></div>
+
+              <!-- Flipper -->
+              <div class="flipper" id="flipper">
+                <div class="flipFace frontFace">
+                  <div class="pageContent" id="flipFront"></div>
+                </div>
+                <div class="flipFace backFace">
+                  <div class="pageContent" id="flipBack"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- front cover -->
+          <div class="cover frontCover" id="frontCover">
+            <div class="coverInner">
+              <div class="badge">💛 Para mi amor</div>
+              <div class="coverTitle">Angie…<br><em>abre esto</em></div>
+              <div class="coverSub">No quería dejarlo solo en mensajes. Quería que quedara aquí.</div>
+              <div class="openCta">
+                <div class="txt">
+                  <strong>Clic para abrir</strong>
+                  <span>o usa el botón “Abrir”</span>
+                </div>
+                <div class="pulse">↪</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="hint">
+        Scroll suave dentro del texto. Para pasar página: clic SOLO en las esquinas.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const CONFIG = {
+      loverName: "Angie Gurdian",
+      yourName: "Jordy Retana (Jigüiro)",
+      coverSub: "Este año pasó rápido… pero tú te quedaste conmigo."
+    };
+
+    // pages[1] = primera página derecha al abrir
+    const pages = [
+      null,
+      {
+        kicker: "PRÓLOGO",
+        title: "Antes de terminar el año…",
+        text:
+`Angie, mi amor…
+
+Solo quería hacer algo diferente.
+Algo que no se pierda entre chats, ni se quede en “después te digo”.
+
+Gracias por este año.
+Por estar ahí, por escucharme, por quererme como soy.
+A veces no lo digo tanto, pero yo sí me fijo en todo: en tus detalles, en tu forma de hablar, en cómo te ríes, en cómo me miras.
+
+Me gusta lo nuestro.
+Me gusta cómo se siente estar contigo, aunque sea en lo simple.
+Me encanta tenerte cerca.
+
+Y sí… yo te quiero muchísimo.
+No solo “me gustas”.
+Me importas. De verdad.`,
+        signature: "— Jigüiro"
+      },
+      {
+        kicker: "RECUERDOS",
+        title: "Momentos que me guardo",
+        text:
+`• Los ratos en tu casa.
+  Antes ni pasaba de la puerta… y ahora ahí me siento tranquilo contigo.
+  Es de esas cosas que parecen pequeñas, pero para mí valen un montón.
+  Porque es confianza. Es estar. Es sentirme parte.
+
+• 4 de octubre — tu cumpleaños.
+  Cantarte “cumpleaños” ahí fue demasiado lindo.
+  Me acuerdo de tu cara, de la vibra, de ese momento “real”.
+
+• 21 de julio — la foto del espejo.
+  No sé por qué, pero me encanta.
+  Me gusta vernos así, normales, felices, sin forzar nada.
+
+• 20 de abril — una salida que se sintió súper bonita.
+  De esas que uno repite en la cabeza porque le da paz.
+
+• Cuando te estaba enseñando a manejar.
+  Verte intentarlo y lograrlo… me hizo demasiado feliz.
+  Me sentí orgulloso de ti. En serio.
+
+Y los mini momentos:
+cuando te quedas dormida,
+cuando te ríes sin darte cuenta,
+cuando estás tranquila y solo estás ahí…
+Ahí es cuando yo pienso: “qué bonito es esto”.`,
+        signature: "— Jigüiro"
+      },
+      {
+        kicker: "TE ADMIRO",
+        title: "Cosas que amo de ti",
+        text:
+`Amo tu forma de ser.
+Amo que puedes ser fuerte y tierna al mismo tiempo.
+Amo que cuando algo te importa, tú sí lo das todo.
+
+Tu pelo me encanta, demasiado.
+Me gusta cómo te queda, cómo se ve, y hasta cómo huele (sí, así).
+Y me encanta tu cara cuando estás feliz, cuando estás emocionada, cuando te da risa algo tonto.
+
+También amo esas cosas que nadie ve:
+tu paciencia, tu corazón, tu manera de cuidar.
+Me gusta cómo eres tú, sin “actuar”, sin aparentar.
+
+Y no es broma:
+tú haces que todo se sienta mejor.`,
+        signature: "— Jigüiro"
+      },
+      {
+        kicker: "LO QUE QUIERO",
+        title: "Para el año que viene",
+        text:
+`Quiero un año bonito para los dos.
+Quiero verte feliz y tranquila.
+Quiero que tengamos más tiempo juntos, más planes, más “nosotros”.
+
+Quiero más fotos (porque sí, tengo un montón y quiero más).
+Quiero más salidas, más comidas ricas, más momentos en paz.
+Quiero verte lograr tus cosas, y estar ahí para aplaudirte.
+
+Y cuando vengan días pesados, quiero que igual nos cuidemos.
+Que no se nos vaya lo bonito por estrés o por tonteras.
+Que sigamos eligiéndonos.
+
+Porque yo sí quiero algo serio contigo.
+Algo real. Algo que crezca.`,
+        signature: "— Jigüiro"
+      },
+      {
+        kicker: "PROMESA",
+        title: "De mí para ti",
+        text:
+`No soy perfecto. Y tú lo sabes.
+Pero esto sí te lo prometo:
+
+— Voy a cuidarte.
+— Voy a hablarte bonito.
+— Voy a estar cuando lo necesites.
+— Voy a respetarte siempre.
+— Y voy a seguir eligiéndote.
+
+Me gusta esta etapa contigo.
+Me gusta lo que estamos construyendo.
+Me gusta la paz que me das, y la emoción que me da pensar en lo que viene.
+
+Y sí… me encanta verte dormir.
+Me encanta tenerte cerca.
+Me encanta que seas tú.`,
+        signature: "— Jigüiro"
+      },
+      {
+        kicker: "FINAL",
+        title: "Feliz fin de año ✨",
+        text:
+`Gracias por este año, Angie.
+Gracias por dejarme entrar a tu vida, a tu casa, a tus días.
+
+Ojalá el próximo año nos trate bonito.
+Ojalá tengamos más de lo que nos hace bien.
+Y ojalá tú te sientas amada, cuidada, y tranquila.
+
+Porque yo sí te amo.
+Y te quiero conmigo.
+
+Feliz fin de año, mi vida.`,
+        signature: "— Jordy (Jigüiro)"
+      }
+    ];
+
+    // DOM
+    const bookWrap = document.getElementById("bookWrap");
+    const frontCover = document.getElementById("frontCover");
+    const openBtn = document.getElementById("openBtn");
+
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const restartBtn = document.getElementById("restartBtn");
+
+    const leftContent = document.getElementById("leftContent");
+    const rightContent = document.getElementById("rightContent");
+
+    const flipper = document.getElementById("flipper");
+    const flipFront = document.getElementById("flipFront");
+    const flipBack  = document.getElementById("flipBack");
+
+    const spread = document.getElementById("spread");
+
+    const pageLabel = document.getElementById("pageLabel");
+    const pageTotal = document.getElementById("pageTotal");
+
+    document.getElementById("loverName").textContent = CONFIG.loverName;
+    document.getElementById("yourName").textContent = CONFIG.yourName;
+    document.getElementById("coverSub").textContent = CONFIG.coverSub;
+
+    // State
+    const LAST_PAGE = pages.length - 1;
+    pageTotal.textContent = LAST_PAGE;
+
+    let isOpened = false;
+    let isAnimating = false;
+    let current = 1;
+
+    function escapeHTML(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function pageHTML(p, n){
+      if (!p){
+        return `
+          <div class="kicker"> </div>
+          <div class="line"></div>
+          <div class="title"> </div>
+          <div class="text"></div>
+          <div class="signature"></div>
+          <div class="pageNum"></div>
+        `;
+      }
+      return `
+        <div class="kicker">${escapeHTML(p.kicker||"")}</div>
+        <div class="line"></div>
+        <div class="title">${escapeHTML(p.title||"")}</div>
+        <div class="text" tabindex="0">${escapeHTML(p.text||"")}</div>
+        <div class="signature">${escapeHTML(p.signature||"")}</div>
+        <div class="pageNum">${n}</div>
+      `;
+    }
+
+    // ✅ wheel suave (quita lo “pegado”)
+    function enableSmoothWheel(){
+      document.querySelectorAll(".text").forEach(el => {
+        if (el.dataset.wheelReady === "1") return;
+        el.dataset.wheelReady = "1";
+
+        let anim = null;
+        let velocity = 0;
+
+        el.addEventListener("wheel", (e) => {
+          e.preventDefault();
+
+          const delta = e.deltaY;
+          velocity += delta * 0.48; // sensibilidad (baja = más suave)
+
+          if (anim) return;
+
+          const step = () => {
+            velocity *= 0.86; // fricción (alta = se siente más “suave”)
+            el.scrollTop += velocity;
+
+            if (Math.abs(velocity) > 0.35) {
+              anim = requestAnimationFrame(step);
+            } else {
+              velocity = 0;
+              anim = null;
+            }
+          };
+
+          anim = requestAnimationFrame(step);
+        }, { passive: false });
+      });
+    }
+
+    function fadeSwap(renderFn){
+      leftContent.classList.add("fadeOut");
+      rightContent.classList.add("fadeOut");
+
+      setTimeout(() => {
+        renderFn();
+        // reset scroll arriba
+        document.querySelectorAll(".text").forEach(t => t.scrollTop = 0);
+        enableSmoothWheel();
+
+        requestAnimationFrame(() => {
+          leftContent.classList.remove("fadeOut");
+          rightContent.classList.remove("fadeOut");
+        });
+      }, 120);
+    }
+
+    function renderSpread(smooth=true){
+      const leftNum  = current - 1;
+      const rightNum = current;
+
+      const doRender = () => {
+        leftContent.innerHTML  = pageHTML(pages[leftNum] || null, leftNum);
+        rightContent.innerHTML = pageHTML(pages[rightNum] || null, rightNum);
+        pageLabel.textContent = current;
+
+        prevBtn.disabled = !isOpened || isAnimating || current <= 1;
+        nextBtn.disabled = !isOpened || isAnimating || current >= LAST_PAGE;
+        restartBtn.disabled = !isOpened || isAnimating;
+      };
+
+      if (smooth) fadeSwap(doRender);
+      else {
+        doRender();
+        enableSmoothWheel();
+      }
+    }
+
+    function openBook(){
+      if (isOpened) return;
+      isOpened = true;
+      current = 1;
+      renderSpread(false);
+      bookWrap.classList.add("opened");
+    }
+
+    frontCover.addEventListener("click", openBook);
+    openBtn.addEventListener("click", openBook);
+
+    function flipNext(){
+      if (!isOpened || isAnimating || current >= LAST_PAGE) return;
+      isAnimating = true;
+
+      flipper.style.display = "block";
+      flipper.className = "flipper next";
+      flipFront.innerHTML = pageHTML(pages[current], current);
+      flipBack.innerHTML  = pageHTML(pages[current + 1] || null, current + 1);
+
+      requestAnimationFrame(() => flipper.classList.add("animNext"));
+
+      setTimeout(() => {
+        flipper.style.display = "none";
+        flipper.className = "flipper";
+        current = Math.min(LAST_PAGE, current + 1);
+        isAnimating = false;
+        renderSpread(true);
+      }, 940);
+    }
+
+    function flipPrev(){
+      if (!isOpened || isAnimating || current <= 1) return;
+      isAnimating = true;
+
+      flipper.style.display = "block";
+      flipper.className = "flipper prev";
+      flipFront.innerHTML = pageHTML(pages[current - 1] || null, current - 1);
+      flipBack.innerHTML  = pageHTML(pages[current] || null, current);
+
+      requestAnimationFrame(() => flipper.classList.add("animPrev"));
+
+      setTimeout(() => {
+        flipper.style.display = "none";
+        flipper.className = "flipper";
+        current = Math.max(1, current - 1);
+        isAnimating = false;
+        renderSpread(true);
+      }, 940);
+    }
+
+    nextBtn.addEventListener("click", flipNext);
+    prevBtn.addEventListener("click", flipPrev);
+    restartBtn.addEventListener("click", () => {
+      if (!isOpened || isAnimating) return;
+      current = 1;
+      renderSpread(true);
+    });
+
+    // ✅ pasar página SOLO esquinas
+    spread.addEventListener("click", (e) => {
+      if (!isOpened || isAnimating) return;
+      if (e.target.closest(".text")) return;
+
+      const r = spread.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width;
+
+      if (x > 0.88) flipNext();
+      else if (x < 0.12) flipPrev();
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (!isOpened){
+        if (e.key === "Enter" || e.key === " ") openBook();
+        return;
+      }
+      if (isAnimating) return;
+      if (e.key === "ArrowRight") flipNext();
+      if (e.key === "ArrowLeft") flipPrev();
+      if (e.key === "ArrowDown") {
+        const t = document.querySelector("#rightContent .text");
+        if (t) t.scrollTop += 70;
+      }
+      if (e.key === "ArrowUp") {
+        const t = document.querySelector("#rightContent .text");
+        if (t) t.scrollTop -= 70;
+      }
+    });
+
+    window.addEventListener("load", () => {
+      requestAnimationFrame(() => bookWrap.classList.add("stage-in"));
+      renderSpread(false);
+    });
+  </script>
+</body>
+</html>
